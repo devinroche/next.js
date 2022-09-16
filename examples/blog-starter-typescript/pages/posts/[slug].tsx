@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
+import { useEffect } from 'react'
 import Container from '../../components/container'
 import PostBody from '../../components/post-body'
 import Header from '../../components/header'
@@ -11,6 +12,9 @@ import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import markdownToHtml from '../../lib/markdownToHtml'
 import PostType from '../../types/post'
+import { useModal } from 'react-modal-hook'
+import { LoginModal } from '../../components/login-modal'
+import { useAuthentication } from '../../context/Authentication'
 
 type Props = {
   post: PostType
@@ -20,9 +24,28 @@ type Props = {
 
 const Post = ({ post, morePosts, preview }: Props) => {
   const router = useRouter()
+  const { user, login } = useAuthentication()
+
+  const [showModal, closeModal] = useModal(() => (
+    <LoginModal
+      isOpen
+      onClose={closeModal}
+      onSubmit={(email, password) => login(email, password)}
+    />
+  ))
+
+  useEffect(() => {
+    if (!user && post.premium) {
+      showModal()
+    }
+
+    return () => closeModal()
+  }, [closeModal, post.premium, showModal, user])
+
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
   }
+
   return (
     <Layout preview={preview}>
       <Container>
@@ -70,7 +93,9 @@ export async function getStaticProps({ params }: Params) {
     'content',
     'ogImage',
     'coverImage',
+    'premium',
   ])
+
   const content = await markdownToHtml(post.content || '')
 
   return {
