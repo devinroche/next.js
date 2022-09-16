@@ -16,7 +16,7 @@ export const Premium = () => {
 
   useEffect(() => {
     return () => closeModal()
-  }, [closeModal, showModal, user])
+  }, [closeModal])
 
   return (
     <button disabled={user !== null} onClick={showModal}>
