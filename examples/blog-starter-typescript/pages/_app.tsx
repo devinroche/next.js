@@ -11,7 +11,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <CookiesProvider>
       <ModalProvider>
-        <AuthenticationProvider pageProps={pageProps}>
+        <AuthenticationProvider>
           <AnyComponent {...pageProps} />
         </AuthenticationProvider>
       </ModalProvider>

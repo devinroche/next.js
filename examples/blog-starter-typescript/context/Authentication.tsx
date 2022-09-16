@@ -20,7 +20,6 @@ interface AuthenticationContextType {
 
 interface AuthenticationProviderProps {
   children: React.ReactNode
-  pageProps: any
 }
 
 export const AuthenticationContext = createContext<AuthenticationContextType>(
@@ -29,7 +28,6 @@ export const AuthenticationContext = createContext<AuthenticationContextType>(
 
 export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
   children,
-  pageProps,
 }) => {
   const [cookies, setCookie] = useCookies(['user'])
   const [user, setUser] = useState<string | null>(null)
